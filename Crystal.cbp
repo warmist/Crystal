@@ -41,9 +41,11 @@
 			<Add library="sfml-window" />
 		</Linker>
 		<Unit filename="cb.bmp" />
+		<Unit filename="include/Button.h" />
 		<Unit filename="include/Gui.h" />
 		<Unit filename="include/world.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="src/Button.cpp" />
 		<Unit filename="src/Gui.cpp" />
 		<Unit filename="src/world.cpp" />
 		<Extensions>

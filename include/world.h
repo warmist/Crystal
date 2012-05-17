@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 
 const int BLOCK_SIZE=256;
+
 class World
 {
     public:
