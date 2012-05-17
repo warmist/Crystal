@@ -25,5 +25,9 @@ void Gui::Draw(sf::RenderTarget& RenderTarget) const
 
 void Gui::OnEvent(const sf::Event& ev)
 {
-
+    for(Button& b : buttons)
+    {
+        if(b.Inside(ev.MouseButton.X,ev.MouseButton.Y))
+            b.Click();
+    }
 }

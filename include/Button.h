@@ -1,12 +1,12 @@
 #ifndef BUTTON_H
 #define BUTTON_H
 
-
 #include <string>
 #include <functional>
 
 #include <SFML/Graphics.hpp>
 
+//TODO move implementation to cpp file
 class Button_Base:public sf::Shape
 {
 protected:
@@ -27,7 +27,7 @@ public:
         if(func)
             func(*this);
     }
-    inline bool Inside(float x,float y)
+    inline bool Inside(float x,float y) const
     {
         return pos.Contains(x,y);
     }

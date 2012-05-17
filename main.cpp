@@ -18,6 +18,7 @@ int main()
 
     Sprite.SetScale(8,8);
     Gui gui(sf::FloatRect(600,0,800,600));
+    World world(sf::FloatRect(0,0,600,600));
 	// Start the game loop
     while (App.IsOpened()&& App2.IsOpened())
     {
@@ -48,12 +49,14 @@ int main()
         // Clear screen
         App.Clear();
 
-        // Draw the sprite
-        App.Draw(Sprite);
+        // World, and then Gui
+        world.Draw(App);
         gui.Draw(App);
+        //App.Draw(Sprite);
         // Update the window
         App.Display();
         App2.Clear();
+        //Map window drawing goes here
         App2.Display();
     }
 
