@@ -22,7 +22,7 @@ struct World_Tile
 {
     enum Flags
     {
-        FLAG_PROCESSED,FLAG_DISCOVERED,FLAG_LAST
+        FLAG_PROCESSED,FLAG_DISCOVERED,FLAG_SELECTED,FLAG_LAST
     };
     char type;
     std::bitset<FLAG_LAST> flags;
@@ -38,7 +38,7 @@ class World_Block
     World_Block(int mx=0,int my=0)
     {
         SetPos(mx,my);
-        img.Create(BLOCK_SIZE,BLOCK_SIZE,Types::colors[Types::Empty]);
+        img.Create(BLOCK_SIZE,BLOCK_SIZE,sf::Color::Black);
         img.SetSmooth(false);
         for(int i=0;i<BLOCK_SIZE*BLOCK_SIZE;i++)
         {
@@ -74,8 +74,16 @@ class World_Block
         for(int i=0;i<BLOCK_SIZE;i++)
         for(int j=0;j<BLOCK_SIZE;j++)
         {
-            int type=get(i,j).type;
-            img.SetPixel(i,j,Types::colors[type]);
+            World_Tile &ct=get(i,j);
+            if(ct.flags[World_Tile::FLAG_DISCOVERED])
+            {
+                int type=ct.type;
+                const sf::Color &cc=Types::colors[type];
+                img.SetPixel(i,j,cc);
+            }
+            else
+                img.SetPixel(i,j,sf::Color::Black);
+            //img.SetPixel(i,j,sf::Color(rand()%256,rand()%256,rand()%256));
         }
     }
     const sf::Sprite& GetSprite() const
@@ -86,18 +94,24 @@ class World_Block
 class World
 {
     typedef std::pair<int,int> world_coord;
-    typedef std::map<world_coord,World_Block> world_blocks;
+    typedef std::map<world_coord,World_Block*> world_blocks;
     world_blocks data;
-    sf::FloatRect pos;
-    sf::Vector2f camerastart;
+    sf::FloatRect pos,screen;
+    sf::Vector2f cameracenter;
+    sf::Shape cursor;
     public:
+        sf::View camera;
         World(const sf::FloatRect& pos);
         virtual ~World();
 
         void Draw(sf::RenderTarget& RenderTarget) const ;
+        void OnEvent(const sf::Event& ev);
+        void Click(float tx,float ty);
+        void MouseMove(float tx,float ty);
     protected:
         World_Block& InitBlock(int x,int y);
     private:
+        sf::FloatRect GetScreen() const;
 };
 
 #endif // WORLD_H

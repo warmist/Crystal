@@ -14,8 +14,9 @@ protected:
     std::function<void(Button_Base&)> func;
 public:
     Button_Base(const sf::FloatRect& pos,std::function<void(Button_Base&)>  func=std::function<void(Button_Base&)>()):
-        pos(pos),
+
         Shape(sf::Shape::Rectangle(pos.Left,pos.Top,pos.Right,pos.Bottom,sf::Color(0,0,0,255),3,sf::Color(200,0,0,255)) ),
+        pos(pos),
         func(func)
     {
     }
@@ -42,7 +43,7 @@ class Button:public Button_Base
     sf::String str;
 public:
     Button(const sf::FloatRect& pos,const std::string& caption,std::function<void(Button_Base&)>  func=std::function<void(Button_Base&)>()):
-        str(caption),Button_Base(pos,func)
+        Button_Base(pos,func),str(caption)
     {
         //str.SetPosition(pos);
         float w=str.GetRect().GetWidth();

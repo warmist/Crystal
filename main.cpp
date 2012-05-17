@@ -5,7 +5,8 @@ int main()
 {
     // Create the main window
     sf::RenderWindow App(sf::VideoMode(800, 600), "Crystal");
-    sf::RenderWindow App2(sf::VideoMode(200,200),"Map");
+    sf::RenderWindow MapWin(sf::VideoMode(200,200),"Map");
+
     // Load a sprite to display
     sf::Image Image;
     if (!Image.Create(100,100,sf::Color(255,0,0,255)))
@@ -15,12 +16,14 @@ int main()
         Image.SetPixel(i,j,sf::Color(rand()%256,rand()%256,rand()%256));
     Image.SetSmooth(false);
     sf::Sprite Sprite(Image);
-
+    App.ShowMouseCursor(false);
     Sprite.SetScale(8,8);
     Gui gui(sf::FloatRect(600,0,800,600));
-    World world(sf::FloatRect(0,0,600,600));
+    World world(sf::FloatRect(0,0,800,600));
 	// Start the game loop
-    while (App.IsOpened()&& App2.IsOpened())
+	sf::String str1;
+
+    while (App.IsOpened()&& MapWin.IsOpened())
     {
         // Process events
         sf::Event Event;
@@ -33,6 +36,27 @@ int main()
             {
                 if(gui.Inside(Event.MouseButton.X,Event.MouseButton.Y))
                     gui.OnEvent(Event);
+                else
+                {
+
+                    //world.OnEvent(Event);
+                    sf::Vector2f pos=App.ConvertCoords(Event.MouseButton.X,Event.MouseButton.Y,&world.camera);
+                    world.Click(pos.x,pos.y);
+                }
+            }
+            if (Event.Type == sf::Event::MouseMoved)
+            {
+                if(gui.Inside(Event.MouseMove.X,Event.MouseMove.Y))
+                {
+                    App.ShowMouseCursor(true);
+                }
+                else
+                {
+                     App.ShowMouseCursor(false);
+                    //world.OnEvent(Event);
+                    sf::Vector2f pos=App.ConvertCoords(Event.MouseMove.X,Event.MouseMove.Y,&world.camera);
+                    world.MouseMove(pos.x,pos.y);
+                }
             }
             /* does not work for some reason...
             if (Event.Type == sf::Event::Resized)
@@ -41,11 +65,16 @@ int main()
             }
             //*/
         }
-        while (App2.GetEvent(Event))
+        while (MapWin.GetEvent(Event))
         {
             if (Event.Type == sf::Event::Closed)
-                App2.Close();
+                MapWin.Close();
         }
+        float Offset = 200.f * App.GetFrameTime();
+        if (App.GetInput().IsKeyDown(sf::Key::Up))    world.camera.Move( 0,      -Offset);
+        if (App.GetInput().IsKeyDown(sf::Key::Down))  world.camera.Move( 0,       Offset);
+        if (App.GetInput().IsKeyDown(sf::Key::Left))  world.camera.Move(-Offset,  0);
+        if (App.GetInput().IsKeyDown(sf::Key::Right)) world.camera.Move( Offset,  0);
         // Clear screen
         App.Clear();
 
@@ -55,9 +84,9 @@ int main()
         //App.Draw(Sprite);
         // Update the window
         App.Display();
-        App2.Clear();
+        MapWin.Clear();
         //Map window drawing goes here
-        App2.Display();
+        MapWin.Display();
     }
 
     return EXIT_SUCCESS;
